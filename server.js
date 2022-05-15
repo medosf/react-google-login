@@ -1,10 +1,11 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const path = require('path');
-const { OAuth2Client } = require('google-auth-library');
+const express = require("express");
+const dotenv = require("dotenv");
+const path = require("path");
+const { OAuth2Client } = require("google-auth-library");
 
 dotenv.config();
-const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
+
+const client = new OAuth2Client(process.env.REACT_APP_GOOGLE);
 
 const app = express();
 app.use(express.json());
@@ -17,7 +18,7 @@ function upsert(array, item) {
   else array.push(item);
 }
 
-app.post('/api/google-login', async (req, res) => {
+app.post("/api/google-login", async (req, res) => {
   const { token } = req.body;
   const ticket = await client.verifyIdToken({
     idToken: token,
@@ -29,9 +30,9 @@ app.post('/api/google-login', async (req, res) => {
   res.json({ name, email, picture });
 });
 
-app.use(express.static(path.join(__dirname, '/build')));
-app.get('*', (req, res) =>
-  res.sendFile(path.join(__dirname, '/build/index.html'))
+app.use(express.static(path.join(__dirname, "/build")));
+app.get("*", (req, res) =>
+  res.sendFile(path.join(__dirname, "/build/index.html"))
 );
 
 app.listen(process.env.PORT || 5000, () => {
